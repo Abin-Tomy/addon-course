@@ -1,56 +1,55 @@
-student = {}
+student_db = {}
 while True:
-    print("Student Database Menu")
-    print("1. Add student")
-    print("2. Remove student")
-    print("3. View students")
-    print("4. Number of students")
-    print("5. search student")
-    print("7. Update student")
-    print("6. Exit")
-    
-    choice = input("\nEnter your choice (1-5): ")
-    
-    if choice == "1":
-        name = input("Enter student's name: ")
-        age = input("Enter student's age: ")
-        student[name] = age
-        print(f"\nSuccess! '{name}' has been added to the database.")
-    
-    elif choice == "2":
-        if not student:
-            print("\nThe database is empty!")
-        else:
-            name = input("Enter student's name to remove: ")
-            if name in student:
-                del student[name]
-                print(f"\nSuccess! '{name}' has been removed from the database.")
-            else:
-                print(f"\nError: '{name}' not found in the database.")
-    
-    elif choice == "3":
-        if student:
-            print("\nStudents in the database:")
-            for name, age in student.items():
-                print(f"Name: {name}, Age: {age}")
-        else:
-            print("\nThe database is empty.")
-    
-    elif choice == "4":
-        print(f"\nNumber of students in the database: {len(student)}")
-    elif choice == "5":
-        if not student:
-            print("\nThe database is empty!")
-        else:
-            name = input("Enter student's name to search: ")
-            if name in student:
-                print(f"\nFound: Name: {name}, Age: {student[name]}")
-            else:
-                print(f"\nError: '{name}' not found in the database.")
-    
-    elif choice == "6":
-        print("\nThank you for using the Student Database! Goodbye!")
-        break
-    
-    else:
-        print("\nError: Invalid choice! Please enter a number between 1 and 5.")
+        print("\nStudent Database Menu:")
+        print("1. Add Student")
+        print("2. Update Student")
+        print("3. Remove Student")
+        print("4. View All Students")
+        print("5. Search Student")
+        print("6. Show Total Students")
+        print("7. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+                roll = input("Enter roll number: ")
+                name = input("Enter student name: ")
+                student_db[roll] = name
+                print("Student added successfully.")
+
+        elif choice == "2":
+                roll = input("enter roll number to update")
+                if roll in student_db:
+                        name = input("enter new name")
+                        student_db[roll] = name
+                        print("Student details updated.")
+                else:
+                        print("Student not found.")
+        elif choice == "3":
+                roll = input("Enter roll number to remove: ")
+                if roll in student_db:
+                        del student_db[roll]
+                        print("Student removed successfully.")
+                else:
+                        print("Student not found.")
+        elif choice == "4":
+                if student_db:
+                        print("Student Database:")
+                        for roll, name in student_db.items():
+                                print(f"Roll No: {roll}, Name: {name}")
+                else:
+                        print("No students found.")
+                        print("Total Students: 0")
+                        print("Average Marks: N/A")
+                        print("Highest Marks: N/A")
+                        print("Lowest Marks: N/A")
+        elif choice == "5":
+                roll = input("Enter roll number to search: ")
+                if roll in student_db:
+                        print(f"Student found - Roll No: {roll}, Name: {student_db[roll]}")
+                else:
+                        print("Student not found.")
+        elif choice == "6":
+                print(f"Total Students: {len(student_db)}")
+        elif choice == "7":
+                print("Exiting...")
+  
