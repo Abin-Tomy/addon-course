@@ -1,4 +1,3 @@
-# Create sets of hobbies for two students
 student_a_hobbies = {'reading', 'gaming', 'painting', 'cooking', 'hiking'}
 student_b_hobbies = {'gaming', 'swimming', 'cooking', 'photography', 'cycling'}
 
