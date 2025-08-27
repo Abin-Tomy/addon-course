@@ -1,10 +1,27 @@
-library = [{"BookId": 1, "Title": "Learn Python Programming", "Author": "John Doe", "Year": 2020},
-           {"BookId": 2, "Title": "Advanced Python", "Author": "Jane Smith", "Year": 2021},
-           {"BookId": 3, "Title": "Data Science with Python", "Author": "Emily Davis", "Year": 2019}]
+books = [
+    (1, "1984", "George Orwell", 1949),
+    (2, "Animal Farm", "George Orwell", 1945),
+    (3, "The Great Gatsby", "F. Scott Fitzgerald", 1925),
+    (4, "Pride and Prejudice", "Jane Austen", 1813),
+    (5, "Lord of the Flies", "William Golding", 1954)
+]
 
-def search_book(query):
-    results = []
-    for book in library:
-        if str(book["BookId"]) == str(query) or book["Title"].lower() == query.lower():
-            results.append(book)
-    return results  
+def find_by_id(book_id):
+    for book in books:
+        if book[0] == book_id:
+            return book
+
+def find_by_title(title):
+    for book in books:
+        if book[1].lower() == title.lower():
+            return book
+
+def books_before(year):
+    return [book for book in books if book[3] < year]
+
+def author_count():
+    count = {}
+    for book in books:
+        author = book[2]
+        count[author] = count.get(author, 0) + 1
+    return count
