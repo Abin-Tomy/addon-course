@@ -26,6 +26,8 @@ model.fit(x_train, y_train)
 
 y_pred = model.predict(x_test)
 y_proba = model.predict_proba(x_test)[:, 1]
+print("Model Accuracy:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
 
 
