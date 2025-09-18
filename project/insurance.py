@@ -1,57 +1,73 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.cluster import KMeans
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import numpy as np
 
 # Load dataset
 df = pd.read_csv(r"datasets\insurance.csv")
-print(df.head())
-print(df.isnull().sum())
+print("Dataset Loaded Successfully\n")
 
-# Convert categorical to numeric (sex, smoker, region)
+# Encode categorical features
 le = LabelEncoder()
-df['sex'] = le.fit_transform(df['sex'])
-df['smoker'] = le.fit_transform(df['smoker'])
-df['region'] = le.fit_transform(df['region'])
+for col in ['sex', 'smoker', 'region']:
+    df[col] = le.fit_transform(df[col])
 
-# Choose features for clustering (age, bmi, charges)
-X = df[['age', 'bmi', 'charges']].values
-print(X[:5])
+# Features & target
+X = df.drop("charges", axis=1)
+y = df["charges"]
 
-# Elbow Method
-wcss = []
-for i in range(1,11):
-    kmeans = KMeans(n_clusters=i, init="k-means++", random_state=42)
-    kmeans.fit(X)
-    wcss.append(kmeans.inertia_)
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-sns.set()
-plt.plot(range(1,11), wcss)
-plt.title("The Elbow Method")
-plt.xlabel("Number of Clusters")
-plt.ylabel("WCSS")
+# Train model
+model = RandomForestRegressor(n_estimators=200, random_state=42)
+model.fit(X_train, y_train)
+
+# Predictions
+y_pred = model.predict(X_test)
+
+# Evaluation
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)
+accuracy = r2 * 100
+
+print("Model Evaluation:")
+print(f"Mean Absolute Error: {mae:.2f}")
+print(f"Mean Squared Error: {mse:.2f}")
+print(f"Root Mean Squared Error: {rmse:.2f}")
+print(f"R2 Score: {r2:.2f}")
+print(f"Model Accuracy: {accuracy:.2f}%")
+
+# Plot Actual vs Predicted
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x=y_test, y=y_pred, alpha=0.6)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
+plt.xlabel("Actual Charges")
+plt.ylabel("Predicted Charges")
+plt.title("Actual vs Predicted Medical Insurance Charges")
 plt.show()
 
-# Apply KMeans with 5 clusters (you can adjust based on elbow result)
-kmeans = KMeans(n_clusters=5, init="k-means++", random_state=42)
-Y = kmeans.fit_predict(X)
-print(Y)
+# =============================
+# User Input for Prediction
+# =============================
+print("\n=== Medical Insurance Cost Prediction ===")
+age = int(input("Enter Age: "))
+sex_val = 1 if input("Enter Sex (male/female): ").lower() == "male" else 0
+bmi = float(input("Enter BMI: "))
+children = int(input("Enter Number of Children: "))
+smoker_val = 1 if input("Are you a Smoker? (yes/no): ").lower() == "yes" else 0
+region_map = {"northeast": 0, "northwest": 1, "southeast": 2, "southwest": 3}
+region_val = region_map.get(input("Enter Region (northeast/northwest/southeast/southwest): ").lower(), 0)
 
-# Visualize clusters (only first 2 dimensions: age vs charges)
-plt.figure(figsize=(8,8))
-plt.scatter(X[Y==0,0], X[Y==0,2], s=100, c="blue", label="Cluster 1")
-plt.scatter(X[Y==1,0], X[Y==1,2], s=100, c="green", label="Cluster 2")
-plt.scatter(X[Y==2,0], X[Y==2,2], s=100, c="red", label="Cluster 3")
-plt.scatter(X[Y==3,0], X[Y==3,2], s=100, c="cyan", label="Cluster 4")
-plt.scatter(X[Y==4,0], X[Y==4,2], s=100, c="magenta", label="Cluster 5")
+# Create input DataFrame
+user_data = pd.DataFrame([[age, sex_val, bmi, children, smoker_val, region_val]], columns=X.columns)
 
-# Plot centroids
-plt.scatter(kmeans.cluster_centers_[:,0], kmeans.cluster_centers_[:,2], 
-            s=200, c="yellow", edgecolors="black", marker="X", label="Centroids")
-
-plt.title("Insurance Customers Clusters")
-plt.xlabel("Age")
-plt.ylabel("Charges")
-plt.legend()
-plt.show()
+# Predict
+predicted_cost = model.predict(user_data)[0]
+print(f"\nPredicted Medical Insurance Cost: ${predicted_cost:.2f}")
