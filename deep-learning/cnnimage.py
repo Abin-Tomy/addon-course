@@ -31,7 +31,7 @@ model.compile(optimizer='rmsprop', # good for CNNs(other options: adam, sgd)
 # 6. Train the model
 history = model.fit(
     X_train, y_train,
-    epochs=5,
+    epochs=5, #number of passes through the dataset(5 times runns the analyse)
     batch_size=64, #fasrter training
     validation_data=(X_test, y_test),
     verbose=1 #show progress bar
