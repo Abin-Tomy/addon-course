@@ -24,23 +24,26 @@ model = models.Sequential([
 ])
 
 # 5.compile and train the model
-model.compile(optimizer='adam',
+model.compile(optimizer='rmsprop', # good for CNNs(other options: adam, sgd)
               loss='sparse_categorical_crossentropy',
                 metrics=['accuracy'])
 
+# 6. Train the model
 history = model.fit(
     X_train, y_train,
     epochs=5,
-    batch_size=64,
+    batch_size=64, #fasrter training
     validation_data=(X_test, y_test),
-    verbose=1
+    verbose=1 #show progress bar
 )
 
+# 7 Evaluate the model
 test_loss, test_acc = model.evaluate(X_test, y_test, verbose=0)
 print("Test accuracy:", round(test_acc * 100, 2), "%")
 
-prediction = model.predict(X_test[:1])
-predicted_label = prediction.argmax()
+# 8. Predict example
+prediction = model.predict(X_test[:1]) # Predict the first test image
+predicted_label = prediction.argmax() # Get the index of the highest probability
 
 plt.imshow(X_test[0].reshape(28, 28), cmap='gray')
 plt.title("Prediction:" + str(predicted_label))
