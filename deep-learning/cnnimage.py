@@ -23,6 +23,7 @@ model = models.Sequential([
     layers.Dense(10, activation='softmax')
 ])
 
+# 5.compile and train the model
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
                 metrics=['accuracy'])
